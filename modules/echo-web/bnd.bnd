@@ -1,0 +1,4 @@
+Bundle-Name: echo-web
+Bundle-SymbolicName: ru.emdev.echo.web
+Bundle-Version: 1.0.0
+Export-Package: ru.emdev.echo.web.constants
