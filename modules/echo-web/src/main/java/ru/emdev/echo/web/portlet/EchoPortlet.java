@@ -1,12 +1,15 @@
 package ru.emdev.echo.web.portlet;
 
-import ru.emdev.echo.web.constants.EchoPortletKeys;
-
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.ParamUtil;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
+
+import ru.emdev.echo.web.constants.EchoPortletKeys;
 
 /**
  * @author akakunin
@@ -26,4 +29,11 @@ import org.osgi.service.component.annotations.Component;
 	service = Portlet.class
 )
 public class EchoPortlet extends MVCPortlet {
+	/* Echo Action
+	 * 
+	 */
+	public void echo(ActionRequest request, ActionResponse response) {
+		String message = ParamUtil.getString(request, "message");
+		response.setRenderParameter("message", message);
+	}
 }
