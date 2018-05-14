@@ -1,0 +1,39 @@
+{
+	"name": "akakunin-theme",
+	"version": "1.0.0",
+	"main": "package.json",
+	"keywords": [
+		"liferay-theme"
+	],
+	"liferayTheme": {
+		"baseTheme": "classic",
+		"screenshot": "",
+		"rubySass": true,
+		"templateLanguage": "ftl",
+		"version": "7.0",
+		"themeletDependencies": {
+			"lfr-product-menu-animation-themelet": {
+				"liferayTheme": {
+					"screenshot": "https://raw.githubusercontent.com/Robert-Frampton/lfr-product-menu-animation-themelet/master/preview.gif",
+					"themelet": true,
+					"version": "7.0"
+				},
+				"name": "lfr-product-menu-animation-themelet",
+				"publishConfig": {
+					"tag": "7_0_x"
+				},
+				"version": "1.0.6",
+				"path": "/Users/akakunin/work/nbrk/education2018/workspace1/themes/node_modules/lfr-product-menu-animation-themelet"
+			}
+		}
+	},
+	"devDependencies": {
+		"gulp": "^3.8.10",
+		"liferay-theme-tasks": "^1.4.2",
+		"liferay-theme-deps-7.0": "~1.2.1"
+	},
+	"dependencies": {
+		"gulp-ruby-sass": "^3.0.0",
+		"lfr-product-menu-animation-themelet": "file:../node_modules/lfr-product-menu-animation-themelet"
+	}
+}

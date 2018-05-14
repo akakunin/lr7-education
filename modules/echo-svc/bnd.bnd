@@ -1,0 +1,3 @@
+Bundle-Name: echo-svc
+Bundle-SymbolicName: ru.emdev.echo-svc
+Bundle-Version: 1.0.0

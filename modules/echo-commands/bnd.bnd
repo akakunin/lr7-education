@@ -1,0 +1,4 @@
+Bundle-Name: echo-commands
+Bundle-SymbolicName: ru.emdev.echo-commands
+Bundle-Version: 1.0.0
+Export-Package: ru.emdev.echo.commands

@@ -1,0 +1,4 @@
+Bundle-Name: doclib-fragment
+Bundle-SymbolicName: doclib.fragment
+Bundle-Version: 1.0.0
+Fragment-Host: com.liferay.document.library.web;bundle-version="2.0.5"
