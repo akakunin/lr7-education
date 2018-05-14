@@ -8,7 +8,9 @@ import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
+import ru.emdev.echo.EchoApi;
 import ru.emdev.echo.web.constants.EchoPortletKeys;
 
 /**
@@ -29,11 +31,19 @@ import ru.emdev.echo.web.constants.EchoPortletKeys;
 	service = Portlet.class
 )
 public class EchoPortlet extends MVCPortlet {
+	protected EchoApi echoService;
+	
+	@Reference
+	public void setEchoService(EchoApi echoService) {
+		this.echoService = echoService;
+	}
+	
 	/* Echo Action
 	 * 
 	 */
 	public void echo(ActionRequest request, ActionResponse response) {
 		String message = ParamUtil.getString(request, "message");
-		response.setRenderParameter("message", message);
+		message = echoService.echo(message);
+		request.setAttribute("message", message);
 	}
 }

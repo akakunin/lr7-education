@@ -2,7 +2,7 @@
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 
 <%
-String message = ParamUtil.getString(request, "message");
+String message = (String)request.getAttribute("message");
 %>
 <p>
 	<b><liferay-ui:message key="echo-web.caption"/></b><br/>
