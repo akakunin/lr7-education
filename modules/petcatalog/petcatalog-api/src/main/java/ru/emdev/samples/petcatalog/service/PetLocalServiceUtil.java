@@ -41,6 +41,16 @@ public class PetLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link ru.emdev.samples.petcatalog.service.impl.PetLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static ru.emdev.samples.petcatalog.model.Pet addPet(long companyId,
+		long groupId, long userId, java.lang.String name,
+		java.lang.String description, double price, java.util.Date birthday,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .addPet(companyId, groupId, userId, name, description,
+			price, birthday, serviceContext);
+	}
 
 	/**
 	* Adds the pet to the database. Also notifies the appropriate model listeners.
@@ -51,6 +61,11 @@ public class PetLocalServiceUtil {
 	public static ru.emdev.samples.petcatalog.model.Pet addPet(
 		ru.emdev.samples.petcatalog.model.Pet pet) {
 		return getService().addPet(pet);
+	}
+
+	public static int countByGroup(long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().countByGroup(groupId);
 	}
 
 	/**
@@ -191,6 +206,12 @@ public class PetLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static java.util.List<ru.emdev.samples.petcatalog.model.Pet> getByGroup(
+		long groupId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getByGroup(groupId, start, end);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery getExportActionableDynamicQuery(

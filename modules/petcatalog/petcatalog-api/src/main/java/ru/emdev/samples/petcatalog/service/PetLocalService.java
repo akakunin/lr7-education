@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -39,6 +40,7 @@ import ru.emdev.samples.petcatalog.model.Pet;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,6 +65,11 @@ public interface PetLocalService extends BaseLocalService,
 	 *
 	 * Never modify or reference this interface directly. Always use {@link PetLocalServiceUtil} to access the pet local service. Add custom service methods to {@link ru.emdev.samples.petcatalog.service.impl.PetLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public Pet addPet(long companyId, long groupId, long userId,
+		java.lang.String name, java.lang.String description, double price,
+		Date birthday, ServiceContext serviceContext)
+		throws SystemException, PortalException;
 
 	/**
 	* Adds the pet to the database. Also notifies the appropriate model listeners.
@@ -72,6 +79,8 @@ public interface PetLocalService extends BaseLocalService,
 	*/
 	@Indexable(type = IndexableType.REINDEX)
 	public Pet addPet(Pet pet);
+
+	public int countByGroup(long groupId) throws SystemException;
 
 	/**
 	* Creates a new pet with the primary key. Does not add the pet to the database.
@@ -181,6 +190,10 @@ public interface PetLocalService extends BaseLocalService,
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Pet> getByGroup(long groupId, int start, int end)
+		throws SystemException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(

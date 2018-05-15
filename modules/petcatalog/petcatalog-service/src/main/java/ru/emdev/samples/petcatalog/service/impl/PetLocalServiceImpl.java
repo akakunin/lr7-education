@@ -14,6 +14,19 @@
 
 package ru.emdev.samples.petcatalog.service.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+
+import java.util.Date;
+import java.util.List;
+
+import ru.emdev.samples.petcatalog.model.Pet;
 import ru.emdev.samples.petcatalog.service.base.PetLocalServiceBaseImpl;
 
 /**
@@ -31,9 +44,58 @@ import ru.emdev.samples.petcatalog.service.base.PetLocalServiceBaseImpl;
  * @see ru.emdev.samples.petcatalog.service.PetLocalServiceUtil
  */
 public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link ru.emdev.samples.petcatalog.service.PetLocalServiceUtil} to access the pet local service.
-	 */
+	private static final Log log = LogFactoryUtil.getLog(PetLocalServiceImpl.class);
+	
+    @Indexable(type = IndexableType.REINDEX)
+    @Override
+    public Pet addPet(long companyId, long groupId, long userId,
+            String name, String description, double price, 
+            Date birthday, ServiceContext serviceContext) throws SystemException, PortalException {
+        log.debug("User " + userId + " attemtps to add pet");
+        // получаем ID для новой сущности используя counterLocalService
+        long petId = counterLocalService.increment(Pet.class.getName());
+
+        // получаем информацию о пользователе
+        User user = userLocalService.getUser(userId);
+
+        // создаем сущность со сгенерированным ID
+        Pet pet = createPet(petId);
+
+        // зполняем базовые audit-поля
+        pet.setCompanyId(companyId);
+        pet.setGroupId(groupId);
+        pet.setUserId(userId);
+        // дополнительно с userId сохраняем userName -
+        // в случае если пользователь будет удален у нас хотя бы останется его
+        // имя
+        pet.setUserName(user.getScreenName());
+
+        // заполняем даты
+        Date now = new Date();
+        pet.setCreateDate(now);
+        pet.setModifiedDate(now);
+
+        // заполняем поля сущности
+        pet.setName(name);
+        pet.setDescription(description);
+        pet.setPrice(price);
+        pet.setBirthday(birthday);
+
+        // сохраняем объект
+        pet = petPersistence.update(pet);
+
+        log.debug("User " + userId + " added pet " + petId);
+
+        return pet;
+    }
+    
+    @Override
+    public int countByGroup(long groupId) throws SystemException {
+        return petPersistence.countByGroup(groupId);
+    }
+
+    @Override
+    public List<Pet> getByGroup(long groupId, int start, int end) throws SystemException {
+        return petPersistence.findByGroup(groupId, start, end);
+    }
 }

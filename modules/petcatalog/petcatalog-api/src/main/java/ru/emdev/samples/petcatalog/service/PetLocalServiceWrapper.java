@@ -32,6 +32,17 @@ public class PetLocalServiceWrapper implements PetLocalService,
 		_petLocalService = petLocalService;
 	}
 
+	@Override
+	public ru.emdev.samples.petcatalog.model.Pet addPet(long companyId,
+		long groupId, long userId, java.lang.String name,
+		java.lang.String description, double price, java.util.Date birthday,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.kernel.exception.PortalException {
+		return _petLocalService.addPet(companyId, groupId, userId, name,
+			description, price, birthday, serviceContext);
+	}
+
 	/**
 	* Adds the pet to the database. Also notifies the appropriate model listeners.
 	*
@@ -42,6 +53,12 @@ public class PetLocalServiceWrapper implements PetLocalService,
 	public ru.emdev.samples.petcatalog.model.Pet addPet(
 		ru.emdev.samples.petcatalog.model.Pet pet) {
 		return _petLocalService.addPet(pet);
+	}
+
+	@Override
+	public int countByGroup(long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _petLocalService.countByGroup(groupId);
 	}
 
 	/**
@@ -195,6 +212,13 @@ public class PetLocalServiceWrapper implements PetLocalService,
 	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
 		return _petLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
+	public java.util.List<ru.emdev.samples.petcatalog.model.Pet> getByGroup(
+		long groupId, int start, int end)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _petLocalService.getByGroup(groupId, start, end);
 	}
 
 	@Override
