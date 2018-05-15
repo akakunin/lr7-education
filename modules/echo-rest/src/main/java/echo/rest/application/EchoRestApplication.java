@@ -12,45 +12,33 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+import ru.emdev.echo.EchoApi;
 
 /**
  * @author akakunin
  */
-@ApplicationPath("/greetings")
+@ApplicationPath("/echo")
 @Component(immediate = true, service = Application.class)
 public class EchoRestApplication extends Application {
-
+	EchoApi echoApi;
+	
+	@Reference
+	void bindEchoApi(EchoApi echoApi) {
+		this.echoApi = echoApi;
+	}
+	
 	public Set<Object> getSingletons() {
 		return Collections.<Object>singleton(this);
 	}
 
 	@GET
 	@Produces("text/plain")
-	public String working() {
-		return "It works!";
+	@Path("/{message}")
+	public String echo(
+			@PathParam("message") String message) {
+		message = echoApi.echo(message);
+		return "Echo message:" + message;
 	}
-
-	@GET
-	@Path("/morning")
-	@Produces("text/plain")
-	public String hello() {
-		return "Good morning!";
-	}
-
-	@GET
-	@Path("/morning/{name}")
-	@Produces("text/plain")
-	public String morning(
-		@PathParam("name") String name,
-		@QueryParam("drink") String drink) {
-
-		String greeting = "Good Morning " + name;
-
-		if (drink != null) {
-			greeting += ". Would you like some " + drink + "?";
-		}
-
-		return greeting;
-	}
-
 }
