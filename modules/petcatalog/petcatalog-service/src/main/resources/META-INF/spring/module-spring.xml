@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<beans
+	default-destroy-method="destroy"
+	default-init-method="afterPropertiesSet"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+	<bean class="ru.emdev.samples.petcatalog.service.impl.PetLocalServiceImpl" id="ru.emdev.samples.petcatalog.service.PetLocalService" />
+	<bean class="ru.emdev.samples.petcatalog.service.impl.PetServiceImpl" id="ru.emdev.samples.petcatalog.service.PetService" />
+	<bean class="ru.emdev.samples.petcatalog.service.persistence.impl.PetPersistenceImpl" id="ru.emdev.samples.petcatalog.service.persistence.PetPersistence" parent="basePersistence" />
+</beans>

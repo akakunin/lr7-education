@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder package-path="ru.emdev.samples.petcatalog">
+	<namespace>PetsCatalog</namespace>
+	
+
+	<entity name="Pet" uuid="true" local-service="true" remote-service="true" trash-enabled="true">
+
+		<!-- PK fields -->
+		<column name="petId" type="long" primary="true" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="price" type="double" />
+		<column name="birthday" type="Date" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="name" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="Company" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
+		<finder name="Group" return-type="Collection">
+			<finder-column name="groupId" />
+		</finder>
+		
+		<finder name="User" return-type="Collection">
+			<finder-column name="userId" />
+		</finder>
+		<!-- References -->
+
+		<reference entity="Company" package-path="com.liferay.portal" />
+		<reference entity="Group" package-path="com.liferay.portal" />
+		<reference entity="User" package-path="com.liferay.portal" />
+	</entity>
+</service-builder>
