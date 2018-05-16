@@ -24,6 +24,8 @@
 <%@ page import="com.liferay.portal.kernel.util.PortalUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil" %>
 <%@ page import="com.liferay.portal.kernel.util.DateFormatFactoryUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.StringUtil" %>
+<%@ page import="com.liferay.portal.kernel.util.Validator" %>
 
 <%@ page import="ru.emdev.samples.petcatalog.model.Pet"%>
 

@@ -39,4 +39,13 @@ int delta = 10;
 		
 		<liferay-ui:search-iterator />
 	</liferay-ui:search-container>
+	
+	<aui:button-row>
+			<portlet:renderURL var="addPetURL">
+				<portlet:param name="jspPage" value="/edit-pet.jsp"/>
+				<portlet:param name="redirect" value="<%= currentURL %>"/>
+			</portlet:renderURL>
+		
+			<aui:button value="add-pet" href="<%= addPetURL %>"/>
+	</aui:button-row>
 </c:if>
