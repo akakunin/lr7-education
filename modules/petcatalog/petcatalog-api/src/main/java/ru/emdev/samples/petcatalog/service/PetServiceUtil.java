@@ -41,6 +41,19 @@ public class PetServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link ru.emdev.samples.petcatalog.service.impl.PetServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static int countByGroup(long groupId) {
+		return getService().countByGroup(groupId);
+	}
+
+	public static void deletePet(long petId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().deletePet(petId);
+	}
+
+	public static java.util.List<ru.emdev.samples.petcatalog.model.Pet> getByGroup(
+		long groupId, int start, int end) {
+		return getService().getByGroup(groupId, start, end);
+	}
 
 	/**
 	* Returns the OSGi service identifier.
@@ -49,6 +62,16 @@ public class PetServiceUtil {
 	*/
 	public static java.lang.String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static ru.emdev.samples.petcatalog.model.Pet getPet(long petId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getPet(petId);
+	}
+
+	public static void updatePet(ru.emdev.samples.petcatalog.model.Pet pet)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().updatePet(pet);
 	}
 
 	public static PetService getService() {

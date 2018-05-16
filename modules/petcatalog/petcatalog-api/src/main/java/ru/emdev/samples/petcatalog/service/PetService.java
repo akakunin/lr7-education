@@ -23,7 +23,12 @@ import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+
+import ru.emdev.samples.petcatalog.model.Pet;
+
+import java.util.List;
 
 /**
  * Provides the remote service interface for Pet. Methods of this
@@ -49,6 +54,14 @@ public interface PetService extends BaseService {
 	 *
 	 * Never modify or reference this interface directly. Always use {@link PetServiceUtil} to access the pet remote service. Add custom service methods to {@link ru.emdev.samples.petcatalog.service.impl.PetServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
+	@AccessControlled(guestAccessEnabled = true)
+	public int countByGroup(long groupId);
+
+	public void deletePet(long petId) throws PortalException;
+
+	@AccessControlled(guestAccessEnabled = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Pet> getByGroup(long groupId, int start, int end);
 
 	/**
 	* Returns the OSGi service identifier.
@@ -56,4 +69,10 @@ public interface PetService extends BaseService {
 	* @return the OSGi service identifier
 	*/
 	public java.lang.String getOSGiServiceIdentifier();
+
+	@AccessControlled(guestAccessEnabled = true)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Pet getPet(long petId) throws PortalException;
+
+	public void updatePet(Pet pet) throws PortalException;
 }

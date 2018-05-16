@@ -32,6 +32,23 @@ public class PetServiceWrapper implements PetService,
 		_petService = petService;
 	}
 
+	@Override
+	public int countByGroup(long groupId) {
+		return _petService.countByGroup(groupId);
+	}
+
+	@Override
+	public void deletePet(long petId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_petService.deletePet(petId);
+	}
+
+	@Override
+	public java.util.List<ru.emdev.samples.petcatalog.model.Pet> getByGroup(
+		long groupId, int start, int end) {
+		return _petService.getByGroup(groupId, start, end);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -40,6 +57,18 @@ public class PetServiceWrapper implements PetService,
 	@Override
 	public java.lang.String getOSGiServiceIdentifier() {
 		return _petService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public ru.emdev.samples.petcatalog.model.Pet getPet(long petId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _petService.getPet(petId);
+	}
+
+	@Override
+	public void updatePet(ru.emdev.samples.petcatalog.model.Pet pet)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_petService.updatePet(pet);
 	}
 
 	@Override

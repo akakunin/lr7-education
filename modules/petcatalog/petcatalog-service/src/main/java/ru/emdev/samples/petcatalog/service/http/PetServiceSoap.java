@@ -16,9 +16,16 @@ package ru.emdev.samples.petcatalog.service.http;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+
+import ru.emdev.samples.petcatalog.service.PetServiceUtil;
+
+import java.rmi.RemoteException;
+
 /**
  * Provides the SOAP utility for the
- * {@link ru.emdev.samples.petcatalog.service.PetServiceUtil} service utility. The
+ * {@link PetServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -53,9 +60,76 @@ import aQute.bnd.annotation.ProviderType;
  * @author Brian Wing Shun Chan
  * @see PetServiceHttp
  * @see ru.emdev.samples.petcatalog.model.PetSoap
- * @see ru.emdev.samples.petcatalog.service.PetServiceUtil
+ * @see PetServiceUtil
  * @generated
  */
 @ProviderType
 public class PetServiceSoap {
+	public static int countByGroup(long groupId) throws RemoteException {
+		try {
+			int returnValue = PetServiceUtil.countByGroup(groupId);
+
+			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static ru.emdev.samples.petcatalog.model.PetSoap[] getByGroup(
+		long groupId, int start, int end) throws RemoteException {
+		try {
+			java.util.List<ru.emdev.samples.petcatalog.model.Pet> returnValue = PetServiceUtil.getByGroup(groupId,
+					start, end);
+
+			return ru.emdev.samples.petcatalog.model.PetSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static ru.emdev.samples.petcatalog.model.PetSoap getPet(long petId)
+		throws RemoteException {
+		try {
+			ru.emdev.samples.petcatalog.model.Pet returnValue = PetServiceUtil.getPet(petId);
+
+			return ru.emdev.samples.petcatalog.model.PetSoap.toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void updatePet(ru.emdev.samples.petcatalog.model.PetSoap pet)
+		throws RemoteException {
+		try {
+			PetServiceUtil.updatePet(ru.emdev.samples.petcatalog.model.impl.PetModelImpl.toModel(
+					pet));
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void deletePet(long petId) throws RemoteException {
+		try {
+			PetServiceUtil.deletePet(petId);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(PetServiceSoap.class);
 }

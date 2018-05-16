@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -36,6 +37,9 @@ import org.osgi.service.component.annotations.Reference;
 import ru.emdev.petcatalog.portlet.constants.PetCatalogPortletKeys;
 import ru.emdev.samples.petcatalog.model.Pet;
 import ru.emdev.samples.petcatalog.service.PetLocalService;
+import ru.emdev.samples.petcatalog.service.PetService;
+import ru.emdev.samples.petcatalog.service.permission.PetCatalogPermission;
+import ru.emdev.samples.petcatalog.service.permission.PetPermission;
 
 /**
  * @author akakunin
@@ -82,8 +86,8 @@ public class PetCatalogPortlet extends MVCPortlet {
         int petsCount = 0;
 
         try {
-                pets = petLocalService.getByGroup(group.getGroupId(), -1, -1);
-                petsCount = petLocalService.countByGroup(group.getGroupId());
+                pets = petService.getByGroup(group.getGroupId(), -1, -1);
+                petsCount = petService.countByGroup(group.getGroupId());
             
 
             request.setAttribute("pets", pets);
@@ -99,7 +103,7 @@ public class PetCatalogPortlet extends MVCPortlet {
         long petId = ParamUtil.getLong(request, "petId");
         if (petId > 0) {
             try {
-                pet = petLocalService.getPet(petId);
+                pet = petService.getPet(petId);
                 request.setAttribute("pet", pet);
             } catch (Exception ex) {
                 log.error("Cannot get pet", ex);
@@ -113,7 +117,7 @@ public class PetCatalogPortlet extends MVCPortlet {
         long petId = ParamUtil.getLong(request, "petId");
         if (petId > 0) {
             try {
-                pet = petLocalService.getPet(petId);
+                pet = petService.getPet(petId);
                 request.setAttribute("pet", pet);
             } catch (Exception ex) {
                 log.error("Cannot get pet", ex);
@@ -137,6 +141,9 @@ public class PetCatalogPortlet extends MVCPortlet {
 
             Pet pet = null;
             if (petId == 0) {
+            	PetCatalogPermission.check(themeDisplay.getPermissionChecker(), themeDisplay.getScopeGroupId(),
+                        PetCatalogPermission.ACTION_ADD_PET);
+            	
                 log.info("User " + themeDisplay.getUserId() + " attemtps to add new pet");
                 pet = petLocalService.addPet(themeDisplay.getCompanyId(),
                         themeDisplay.getScopeGroupId(),
@@ -144,6 +151,8 @@ public class PetCatalogPortlet extends MVCPortlet {
                         name, description, price, birthday, serviceContext);
             } else {
                 log.info("User " + themeDisplay.getUserId() + " attemtps to edit pet " + petId);
+                PetPermission.check(themeDisplay.getPermissionChecker(), petId, ActionKeys.UPDATE);
+
                 pet = petLocalService.updatePet(petId,
                         themeDisplay.getUserId(),
                         name, description, price, birthday, serviceContext);
@@ -163,7 +172,7 @@ public class PetCatalogPortlet extends MVCPortlet {
 
         log.info("User " + themeDisplay.getUserId() + " attemtps to remove pet " + petId);
         try {
-            petLocalService.deletePet(petId);
+            petService.deletePet(petId);
             log.info("Pet " + petId + " removed by user " + themeDisplay.getUserId());
         } catch (Exception ex) {
             log.error("Cannot remove pet", ex);
@@ -231,6 +240,11 @@ public class PetCatalogPortlet extends MVCPortlet {
 	public void setPetLocalService(PetLocalService petLocalService) {
 		this.petLocalService = petLocalService;
 	}
+	@Reference
+	public void setPetService(PetService petService) {
+		this.petService = petService;
+	}
 	
 	PetLocalService 	petLocalService;
+	PetService			petService;
 }

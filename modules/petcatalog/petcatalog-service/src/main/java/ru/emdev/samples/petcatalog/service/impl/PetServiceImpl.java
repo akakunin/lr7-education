@@ -14,7 +14,15 @@
 
 package ru.emdev.samples.petcatalog.service.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.access.control.AccessControlled;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+
+import java.util.List;
+
+import ru.emdev.samples.petcatalog.model.Pet;
 import ru.emdev.samples.petcatalog.service.base.PetServiceBaseImpl;
+import ru.emdev.samples.petcatalog.service.permission.PetPermission;
 
 /**
  * The implementation of the pet remote service.
@@ -31,9 +39,38 @@ import ru.emdev.samples.petcatalog.service.base.PetServiceBaseImpl;
  * @see ru.emdev.samples.petcatalog.service.PetServiceUtil
  */
 public class PetServiceImpl extends PetServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link ru.emdev.samples.petcatalog.service.PetServiceUtil} to access the pet remote service.
-	 */
+	@Override
+    @AccessControlled(guestAccessEnabled = true)
+    public int countByGroup(long groupId) {
+        return petPersistence.filterCountByGroup(groupId);
+    }
+    
+    @Override
+    @AccessControlled(guestAccessEnabled = true)
+    public List<Pet> getByGroup(long groupId, int start, int end) {
+        return petPersistence.filterFindByGroup(groupId, start, end);
+    }
+    
+    @Override
+    @AccessControlled(guestAccessEnabled = true)
+    public Pet getPet(long petId) throws PortalException {
+        Pet pet = petPersistence.findByPrimaryKey(petId);
+        PetPermission.check(getPermissionChecker(), pet, ActionKeys.VIEW);
+
+        return pet;
+    }
+    
+    @Override
+    public void updatePet(Pet pet) throws PortalException {
+        PetPermission.check(getPermissionChecker(), pet, ActionKeys.UPDATE);
+
+        petPersistence.update(pet);
+    }
+
+    @Override
+    public void deletePet(long petId) throws PortalException {
+        PetPermission.check(getPermissionChecker(), petId, ActionKeys.DELETE);
+
+        petLocalService.deletePet(petId);
+    }
 }
