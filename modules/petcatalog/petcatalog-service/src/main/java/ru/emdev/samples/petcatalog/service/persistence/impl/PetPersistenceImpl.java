@@ -22,9 +22,11 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Query;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -2384,6 +2386,312 @@ public class PetPersistenceImpl extends BasePersistenceImpl<Pet>
 	}
 
 	/**
+	 * Returns all the pets that the user has permission to view where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the matching pets that the user has permission to view
+	 */
+	@Override
+	public List<Pet> filterFindByGroup(long groupId) {
+		return filterFindByGroup(groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the pets that the user has permission to view where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PetModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of pets
+	 * @param end the upper bound of the range of pets (not inclusive)
+	 * @return the range of matching pets that the user has permission to view
+	 */
+	@Override
+	public List<Pet> filterFindByGroup(long groupId, int start, int end) {
+		return filterFindByGroup(groupId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the pets that the user has permissions to view where groupId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link PetModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
+	 * </p>
+	 *
+	 * @param groupId the group ID
+	 * @param start the lower bound of the range of pets
+	 * @param end the upper bound of the range of pets (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching pets that the user has permission to view
+	 */
+	@Override
+	public List<Pet> filterFindByGroup(long groupId, int start, int end,
+		OrderByComparator<Pet> orderByComparator) {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByGroup(groupId, start, end, orderByComparator);
+		}
+
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(3 +
+					(orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_PET_WHERE);
+		}
+		else {
+			query.append(_FILTER_SQL_SELECT_PET_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		query.append(_FINDER_COLUMN_GROUP_GROUPID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_PET_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_TABLE,
+					orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				query.append(PetModelImpl.ORDER_BY_JPQL);
+			}
+			else {
+				query.append(PetModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
+				Pet.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				groupId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				q.addEntity(_FILTER_ENTITY_ALIAS, PetImpl.class);
+			}
+			else {
+				q.addEntity(_FILTER_ENTITY_TABLE, PetImpl.class);
+			}
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			return (List<Pet>)QueryUtil.list(q, getDialect(), start, end);
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the pets before and after the current pet in the ordered set of pets that the user has permission to view where groupId = &#63;.
+	 *
+	 * @param petId the primary key of the current pet
+	 * @param groupId the group ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next pet
+	 * @throws NoSuchPetException if a pet with the primary key could not be found
+	 */
+	@Override
+	public Pet[] filterFindByGroup_PrevAndNext(long petId, long groupId,
+		OrderByComparator<Pet> orderByComparator) throws NoSuchPetException {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return findByGroup_PrevAndNext(petId, groupId, orderByComparator);
+		}
+
+		Pet pet = findByPrimaryKey(petId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Pet[] array = new PetImpl[3];
+
+			array[0] = filterGetByGroup_PrevAndNext(session, pet, groupId,
+					orderByComparator, true);
+
+			array[1] = pet;
+
+			array[2] = filterGetByGroup_PrevAndNext(session, pet, groupId,
+					orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected Pet filterGetByGroup_PrevAndNext(Session session, Pet pet,
+		long groupId, OrderByComparator<Pet> orderByComparator, boolean previous) {
+		StringBundler query = null;
+
+		if (orderByComparator != null) {
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			query = new StringBundler(4);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_PET_WHERE);
+		}
+		else {
+			query.append(_FILTER_SQL_SELECT_PET_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		query.append(_FINDER_COLUMN_GROUP_GROUPID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			query.append(_FILTER_SQL_SELECT_PET_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				query.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					query.append(_ORDER_BY_ENTITY_ALIAS);
+				}
+				else {
+					query.append(_ORDER_BY_ENTITY_TABLE);
+				}
+
+				query.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(WHERE_GREATER_THAN);
+					}
+					else {
+						query.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			query.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					query.append(_ORDER_BY_ENTITY_ALIAS);
+				}
+				else {
+					query.append(_ORDER_BY_ENTITY_TABLE);
+				}
+
+				query.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						query.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						query.append(ORDER_BY_ASC);
+					}
+					else {
+						query.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				query.append(PetModelImpl.ORDER_BY_JPQL);
+			}
+			else {
+				query.append(PetModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
+				Pet.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				groupId);
+
+		SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+		q.setFirstResult(0);
+		q.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			q.addEntity(_FILTER_ENTITY_ALIAS, PetImpl.class);
+		}
+		else {
+			q.addEntity(_FILTER_ENTITY_TABLE, PetImpl.class);
+		}
+
+		QueryPos qPos = QueryPos.getInstance(q);
+
+		qPos.add(groupId);
+
+		if (orderByComparator != null) {
+			Object[] values = orderByComparator.getOrderByConditionValues(pet);
+
+			for (Object value : values) {
+				qPos.add(value);
+			}
+		}
+
+		List<Pet> list = q.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
 	 * Removes all the pets where groupId = &#63; from the database.
 	 *
 	 * @param groupId the group ID
@@ -2445,6 +2753,54 @@ public class PetPersistenceImpl extends BasePersistenceImpl<Pet>
 		}
 
 		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of pets that the user has permission to view where groupId = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @return the number of matching pets that the user has permission to view
+	 */
+	@Override
+	public int filterCountByGroup(long groupId) {
+		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
+			return countByGroup(groupId);
+		}
+
+		StringBundler query = new StringBundler(2);
+
+		query.append(_FILTER_SQL_COUNT_PET_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUP_GROUPID_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(query.toString(),
+				Pet.class.getName(), _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN,
+				groupId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			q.addScalar(COUNT_COLUMN_NAME,
+				com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			Long count = (Long)q.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+		}
 	}
 
 	private static final String _FINDER_COLUMN_GROUP_GROUPID_2 = "pet.groupId = ?";
@@ -3811,7 +4167,17 @@ public class PetPersistenceImpl extends BasePersistenceImpl<Pet>
 	private static final String _SQL_SELECT_PET_WHERE = "SELECT pet FROM Pet pet WHERE ";
 	private static final String _SQL_COUNT_PET = "SELECT COUNT(pet) FROM Pet pet";
 	private static final String _SQL_COUNT_PET_WHERE = "SELECT COUNT(pet) FROM Pet pet WHERE ";
+	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "pet.petId";
+	private static final String _FILTER_SQL_SELECT_PET_WHERE = "SELECT DISTINCT {pet.*} FROM PetsCatalog_Pet pet WHERE ";
+	private static final String _FILTER_SQL_SELECT_PET_NO_INLINE_DISTINCT_WHERE_1 =
+		"SELECT {PetsCatalog_Pet.*} FROM (SELECT DISTINCT pet.petId FROM PetsCatalog_Pet pet WHERE ";
+	private static final String _FILTER_SQL_SELECT_PET_NO_INLINE_DISTINCT_WHERE_2 =
+		") TEMP_TABLE INNER JOIN PetsCatalog_Pet ON TEMP_TABLE.petId = PetsCatalog_Pet.petId";
+	private static final String _FILTER_SQL_COUNT_PET_WHERE = "SELECT COUNT(DISTINCT pet.petId) AS COUNT_VALUE FROM PetsCatalog_Pet pet WHERE ";
+	private static final String _FILTER_ENTITY_ALIAS = "pet";
+	private static final String _FILTER_ENTITY_TABLE = "PetsCatalog_Pet";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "pet.";
+	private static final String _ORDER_BY_ENTITY_TABLE = "PetsCatalog_Pet.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Pet exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Pet exists with the key {";
 	private static final Log _log = LogFactoryUtil.getLog(PetPersistenceImpl.class);

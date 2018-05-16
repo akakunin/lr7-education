@@ -50,7 +50,7 @@ public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
     @Override
     public Pet addPet(long companyId, long groupId, long userId,
             String name, String description, double price, 
-            Date birthday) throws SystemException, PortalException {
+            Date birthday, ServiceContext serviceContext) throws SystemException, PortalException {
         log.debug("User " + userId + " attemtps to add pet");
         // получаем ID для новой сущности используя counterLocalService
         long petId = counterLocalService.increment(Pet.class.getName());
@@ -84,6 +84,19 @@ public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
         // сохраняем объект
         pet = petPersistence.update(pet);
 
+        if (serviceContext.isAddGroupPermissions() ||
+                serviceContext.isAddGuestPermissions()) {
+
+            addPetResources(
+                    pet, serviceContext.isAddGroupPermissions(),
+                    serviceContext.isAddGuestPermissions());
+        }
+        else {
+            addPetResources(
+                    pet, serviceContext.getGroupPermissions(),
+                    serviceContext.getGuestPermissions());
+        }
+        
         log.debug("User " + userId + " added pet " + petId);
 
         return pet;
@@ -102,7 +115,8 @@ public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
     @Indexable(type = IndexableType.REINDEX)
     @Override
     public Pet updatePet(long petId, long userId,
-            String name, String description, double price, Date birthday) throws SystemException, PortalException {
+            String name, String description, double price, Date birthday,
+            ServiceContext serviceContext) throws SystemException, PortalException {
         log.debug("User " + userId + " attemtps to update pet " + petId);
 
         // получаем изменяемый объект по ID
@@ -122,7 +136,73 @@ public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
         // обновляем объект
         pet = petPersistence.update(pet);
 
+     // Resources
+
+        if ((serviceContext.getGroupPermissions() != null) ||
+                (serviceContext.getGuestPermissions() != null)) {
+
+            updatePetResources(
+                    pet, serviceContext.getGroupPermissions(),
+                    serviceContext.getGuestPermissions());
+        }
+
+        
         log.debug("User " + userId + " updated pet " + petId);
         return pet;
     }
+    
+    protected void addPetResources(
+            Pet pet, boolean addGroupPermissions,
+            boolean addGuestPermissions)
+        throws PortalException, SystemException {
+
+        resourceLocalService.addResources(
+                pet.getCompanyId(), pet.getGroupId(), pet.getUserId(),
+                Pet.class.getName(), pet.getPetId(), false,
+                addGroupPermissions, addGuestPermissions);
+    }
+
+    protected void addPetResources(
+            Pet pet, String[] groupPermissions,
+            String[] guestPermissions)
+        throws PortalException, SystemException {
+
+        resourceLocalService.addModelResources(
+                pet.getCompanyId(), pet.getGroupId(), pet.getUserId(),
+                Pet.class.getName(), pet.getPetId(), groupPermissions,
+                guestPermissions);
+    }
+
+    
+    protected void addPetResources(
+            long petId, boolean addGroupPermissions,
+            boolean addGuestPermissions)
+        throws PortalException, SystemException {
+
+        Pet pet = petPersistence.findByPrimaryKey(petId);
+
+        addPetResources(pet, addGroupPermissions, addGuestPermissions);
+    }
+
+    protected void addPetResources(
+            long petId, String[] groupPermissions, String[] guestPermissions)
+        throws PortalException, SystemException {
+
+        Pet pet = petPersistence.findByPrimaryKey(petId);
+
+        addPetResources(pet, groupPermissions, guestPermissions);
+    }
+    
+    protected void updatePetResources(
+            Pet pet, String[] groupPermissions,
+            String[] guestPermissions)
+        throws PortalException, SystemException {
+
+        resourceLocalService.updateResources(
+                pet.getCompanyId(), pet.getGroupId(),
+                Pet.class.getName(), pet.getPetId(), groupPermissions,
+                guestPermissions);
+    }
+
+
 }

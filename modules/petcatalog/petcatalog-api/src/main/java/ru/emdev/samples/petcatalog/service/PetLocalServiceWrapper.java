@@ -35,11 +35,12 @@ public class PetLocalServiceWrapper implements PetLocalService,
 	@Override
 	public ru.emdev.samples.petcatalog.model.Pet addPet(long companyId,
 		long groupId, long userId, java.lang.String name,
-		java.lang.String description, double price, java.util.Date birthday)
+		java.lang.String description, double price, java.util.Date birthday,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.kernel.exception.PortalException {
 		return _petLocalService.addPet(companyId, groupId, userId, name,
-			description, price, birthday);
+			description, price, birthday, serviceContext);
 	}
 
 	/**
@@ -337,11 +338,12 @@ public class PetLocalServiceWrapper implements PetLocalService,
 	@Override
 	public ru.emdev.samples.petcatalog.model.Pet updatePet(long petId,
 		long userId, java.lang.String name, java.lang.String description,
-		double price, java.util.Date birthday)
+		double price, java.util.Date birthday,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.kernel.exception.PortalException {
 		return _petLocalService.updatePet(petId, userId, name, description,
-			price, birthday);
+			price, birthday, serviceContext);
 	}
 
 	/**

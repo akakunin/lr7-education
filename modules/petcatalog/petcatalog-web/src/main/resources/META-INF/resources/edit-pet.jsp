@@ -27,6 +27,15 @@ String redirect = ParamUtil.getString(request, "redirect");
 	
 	<aui:input name="birthday"/>
 
+	<c:if test="<%= (pet == null) %>">
+		<%-- unput-permissions необходим чтобы объект получил при создании настройки прав доступа по умолчанию --%>
+		<aui:field-wrapper label="permissions">
+			<liferay-ui:input-permissions
+				modelName="<%= Pet.class.getName() %>"
+			/>
+		</aui:field-wrapper>
+	</c:if>
+	
 	<aui:button-row>
 		<aui:button type="submit" value='<%= pet != null ? "update-pet" : "add-pet" %>'/>
 		<c:if test="<%= Validator.isNotNull(redirect) %>">

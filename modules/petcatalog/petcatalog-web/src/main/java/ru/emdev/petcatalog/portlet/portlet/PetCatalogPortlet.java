@@ -4,6 +4,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -24,10 +26,8 @@ import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
@@ -133,18 +133,20 @@ public class PetCatalogPortlet extends MVCPortlet {
         Date birthday = getDateFromRequest(request, "birthday");
 
         try {
+        	ServiceContext serviceContext = ServiceContextFactory.getInstance(Pet.class.getName(), request);
+
             Pet pet = null;
             if (petId == 0) {
                 log.info("User " + themeDisplay.getUserId() + " attemtps to add new pet");
                 pet = petLocalService.addPet(themeDisplay.getCompanyId(),
                         themeDisplay.getScopeGroupId(),
                         themeDisplay.getUserId(),
-                        name, description, price, birthday);
+                        name, description, price, birthday, serviceContext);
             } else {
                 log.info("User " + themeDisplay.getUserId() + " attemtps to edit pet " + petId);
                 pet = petLocalService.updatePet(petId,
                         themeDisplay.getUserId(),
-                        name, description, price, birthday);
+                        name, description, price, birthday, serviceContext);
             }
 
             log.info("Pet " + pet.getPetId() + " added/updated");

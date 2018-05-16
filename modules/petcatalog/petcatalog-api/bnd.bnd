@@ -5,5 +5,6 @@ Export-Package:\
 	ru.emdev.samples.petcatalog.exception,\
 	ru.emdev.samples.petcatalog.model,\
 	ru.emdev.samples.petcatalog.service,\
+	ru.emdev.samples.petcatalog.service.permission,\
 	ru.emdev.samples.petcatalog.service.persistence
 -includeresource: META-INF/service.xml=../petcatalog-service/service.xml

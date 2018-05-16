@@ -43,12 +43,13 @@ public class PetLocalServiceUtil {
 	 */
 	public static ru.emdev.samples.petcatalog.model.Pet addPet(long companyId,
 		long groupId, long userId, java.lang.String name,
-		java.lang.String description, double price, java.util.Date birthday)
+		java.lang.String description, double price, java.util.Date birthday,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .addPet(companyId, groupId, userId, name, description,
-			price, birthday);
+			price, birthday, serviceContext);
 	}
 
 	/**
@@ -320,11 +321,13 @@ public class PetLocalServiceUtil {
 
 	public static ru.emdev.samples.petcatalog.model.Pet updatePet(long petId,
 		long userId, java.lang.String name, java.lang.String description,
-		double price, java.util.Date birthday)
+		double price, java.util.Date birthday,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.SystemException,
 			com.liferay.portal.kernel.exception.PortalException {
 		return getService()
-				   .updatePet(petId, userId, name, description, price, birthday);
+				   .updatePet(petId, userId, name, description, price,
+			birthday, serviceContext);
 	}
 
 	/**
