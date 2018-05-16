@@ -1,0 +1,4 @@
+Bundle-Name: petcatalog-web
+Bundle-SymbolicName: ru.emdev.petcatalog.portlet
+Bundle-Version: 1.0.0
+Export-Package: ru.emdev.petcatalog.portlet.constants
