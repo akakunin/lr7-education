@@ -13,7 +13,7 @@ int delta = 10;
 	<liferay-ui:search-container
 	    iteratorURL="<%= iteratorURL %>"
 		emptyResultsMessage="no-pets-found"
-		headerNames="#,name,description,price,birthday"
+		headerNames="#,name,description,price,birthday,actions"
 		delta="<%= delta %>">
 		<liferay-ui:search-container-results results="<%= pets %>"/>
 		
@@ -41,6 +41,23 @@ int delta = 10;
 													 
 			<liferay-ui:search-container-column-text name="birthday">
 				<%= dateFormatDateTime.format(pet.getBirthday()) %>
+			</liferay-ui:search-container-column-text>
+			
+			<liferay-ui:search-container-column-text name="actions">
+				<liferay-ui:icon-list>
+					<portlet:renderURL var="editPetURL">
+						<portlet:param name="petId" value="<%= String.valueOf(pet.getPetId()) %>" />
+						<portlet:param name="jspPage" value="/edit-pet.jsp"/>
+						<portlet:param name="redirect" value="<%= currentURL %>"/>
+					</portlet:renderURL>
+					<liferay-ui:icon image="edit" url="<%= editPetURL %>"/>
+					
+					<portlet:actionURL name="deletePet" var="deletePetURL">
+						<portlet:param name="petId" value="<%= String.valueOf(pet.getPetId()) %>" />
+						<portlet:param name="redirect" value="<%= currentURL %>"/>
+					</portlet:actionURL>
+					<liferay-ui:icon-delete url="<%= deletePetURL %>"/>
+				</liferay-ui:icon-list>
 			</liferay-ui:search-container-column-text>
 		</liferay-ui:search-container-row>
 		

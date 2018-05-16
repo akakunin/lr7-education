@@ -334,6 +334,16 @@ public class PetLocalServiceWrapper implements PetLocalService,
 		return _petLocalService.getPetsCount();
 	}
 
+	@Override
+	public ru.emdev.samples.petcatalog.model.Pet updatePet(long petId,
+		long userId, java.lang.String name, java.lang.String description,
+		double price, java.util.Date birthday)
+		throws com.liferay.portal.kernel.exception.SystemException,
+			com.liferay.portal.kernel.exception.PortalException {
+		return _petLocalService.updatePet(petId, userId, name, description,
+			price, birthday);
+	}
+
 	/**
 	* Updates the pet in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	*

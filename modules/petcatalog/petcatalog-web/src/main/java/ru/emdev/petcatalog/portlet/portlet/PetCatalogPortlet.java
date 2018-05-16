@@ -66,6 +66,8 @@ public class PetCatalogPortlet extends MVCPortlet {
             renderList(request, response);
         } else if ("/view-pet.jsp".equals(jspPage)) {
             renderViewPet(request, response);
+        } else if ("/edit-pet.jsp".equals(jspPage)) {
+            renderEditPet(request, response);
         }
 
         super.render(request, response);
@@ -105,27 +107,64 @@ public class PetCatalogPortlet extends MVCPortlet {
         }
     }
 	
-	public void addPet(ActionRequest request, ActionResponse response) {
+	private void renderEditPet(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+        // try to get pet by pet id
+        Pet pet = null;
+        long petId = ParamUtil.getLong(request, "petId");
+        if (petId > 0) {
+            try {
+                pet = petLocalService.getPet(petId);
+                request.setAttribute("pet", pet);
+            } catch (Exception ex) {
+                log.error("Cannot get pet", ex);
+            }
+        }
+    }
+	
+	
+	public void updatePet(ActionRequest request, ActionResponse response) {
         ThemeDisplay themeDisplay = getThemeDisplay(request);
         String redirect = ParamUtil.getString(request, WebKeys.REDIRECT);
-
+        long petId = ParamUtil.getLong(request, "petId");
+        
         String name = ParamUtil.getString(request, "name");
         String description = ParamUtil.getString(request, "description");
         Double price = ParamUtil.getDouble(request, "price");
         Date birthday = getDateFromRequest(request, "birthday");
 
         try {
-            log.info("User " + themeDisplay.getUserId() + " attemtps to add new pet");
-            Pet pet = petLocalService.addPet(themeDisplay.getCompanyId(),
-                    themeDisplay.getScopeGroupId(),
-                    themeDisplay.getUserId(),
-                    name, description, price, birthday);
+            Pet pet = null;
+            if (petId == 0) {
+                log.info("User " + themeDisplay.getUserId() + " attemtps to add new pet");
+                pet = petLocalService.addPet(themeDisplay.getCompanyId(),
+                        themeDisplay.getScopeGroupId(),
+                        themeDisplay.getUserId(),
+                        name, description, price, birthday);
+            } else {
+                log.info("User " + themeDisplay.getUserId() + " attemtps to edit pet " + petId);
+                pet = petLocalService.updatePet(petId,
+                        themeDisplay.getUserId(),
+                        name, description, price, birthday);
+            }
 
             log.info("Pet " + pet.getPetId() + " added/updated");
         } catch (Exception ex) {
             log.error("Cannot add pet", ex);
             copyRequestParameters(request, response);
             SessionErrors.add(request, "cannot-add-pet");
+        }
+    }
+	
+	public void deletePet(ActionRequest request, ActionResponse response) {
+        ThemeDisplay themeDisplay = getThemeDisplay(request);
+        long petId = ParamUtil.getLong(request, "petId");
+
+        log.info("User " + themeDisplay.getUserId() + " attemtps to remove pet " + petId);
+        try {
+            petLocalService.deletePet(petId);
+            log.info("Pet " + petId + " removed by user " + themeDisplay.getUserId());
+        } catch (Exception ex) {
+            log.error("Cannot remove pet", ex);
         }
     }
 	

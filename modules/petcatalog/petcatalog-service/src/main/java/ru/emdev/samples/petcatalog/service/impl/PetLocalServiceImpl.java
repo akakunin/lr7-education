@@ -98,4 +98,31 @@ public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
     public List<Pet> getByGroup(long groupId, int start, int end) throws SystemException {
         return petPersistence.findByGroup(groupId, start, end);
     }
+    
+    @Indexable(type = IndexableType.REINDEX)
+    @Override
+    public Pet updatePet(long petId, long userId,
+            String name, String description, double price, Date birthday) throws SystemException, PortalException {
+        log.debug("User " + userId + " attemtps to update pet " + petId);
+
+        // получаем изменяемый объект по ID
+        Pet pet = petPersistence.findByPrimaryKey(petId);
+        User user = userLocalService.getUser(userId);
+
+        // заполняем дату (только modifiedDate)
+        Date now = new Date();
+        pet.setModifiedDate(now);
+
+        // заполняем поля объекта
+        pet.setName(name);
+        pet.setDescription(description);
+        pet.setPrice(price);
+        pet.setBirthday(birthday);
+
+        // обновляем объект
+        pet = petPersistence.update(pet);
+
+        log.debug("User " + userId + " updated pet " + petId);
+        return pet;
+    }
 }

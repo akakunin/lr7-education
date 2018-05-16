@@ -1,10 +1,10 @@
 <%@ include file="/init.jsp" %>
 
 <%
-Pet pet = null;
+Pet pet = (Pet)request.getAttribute("pet");
 String redirect = ParamUtil.getString(request, "redirect");
 %>
-<portlet:actionURL name="addPet" var="addPetURL"/>
+<portlet:actionURL name="updatePet" var="addPetURL"/>
 
 <liferay-ui:header title='<%= pet != null ? pet.getName() : "add-pet" %>' backURL="<%= redirect %>"/>
 
@@ -13,6 +13,9 @@ String redirect = ParamUtil.getString(request, "redirect");
 	<aui:input type="hidden" name="redirect" value="<%= redirect %>"/>
 	<aui:input type="hidden" name="jspPage" value="/edit-pet.jsp"/>
 
+	<c:if test="<%= pet != null %>">
+		<aui:input type="hidden" name="petId" value="<%= pet.getPetId() %>"/>
+	</c:if>
 	
 	<aui:model-context bean="<%= pet %>" model="<%= Pet.class %>" />
 	
@@ -25,7 +28,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 	<aui:input name="birthday"/>
 
 	<aui:button-row>
-		<aui:button type="submit" value="add-pet" />
+		<aui:button type="submit" value='<%= pet != null ? "update-pet" : "add-pet" %>'/>
 		<c:if test="<%= Validator.isNotNull(redirect) %>">
 			<aui:button value="cancel" href="<%= redirect %>"/>
 		</c:if>
