@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -68,8 +67,7 @@ public interface PetLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public Pet addPet(long companyId, long groupId, long userId,
 		java.lang.String name, java.lang.String description, double price,
-		Date birthday, ServiceContext serviceContext)
-		throws SystemException, PortalException;
+		Date birthday) throws SystemException, PortalException;
 
 	/**
 	* Adds the pet to the database. Also notifies the appropriate model listeners.

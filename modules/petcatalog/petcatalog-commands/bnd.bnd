@@ -1,0 +1,3 @@
+Bundle-Name: petcatalog-commands
+Bundle-SymbolicName: ru.emdev.samples.petcatalog
+Bundle-Version: 1.0.0

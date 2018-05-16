@@ -50,7 +50,7 @@ public class PetLocalServiceImpl extends PetLocalServiceBaseImpl {
     @Override
     public Pet addPet(long companyId, long groupId, long userId,
             String name, String description, double price, 
-            Date birthday, ServiceContext serviceContext) throws SystemException, PortalException {
+            Date birthday) throws SystemException, PortalException {
         log.debug("User " + userId + " attemtps to add pet");
         // получаем ID для новой сущности используя counterLocalService
         long petId = counterLocalService.increment(Pet.class.getName());
