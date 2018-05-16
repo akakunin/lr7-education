@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -23,8 +24,10 @@ import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
@@ -54,8 +57,21 @@ import ru.emdev.samples.petcatalog.service.PetLocalService;
 public class PetCatalogPortlet extends MVCPortlet {
 	private static final Log log = LogFactoryUtil.getLog(PetCatalogPortlet.class.getName());
 	
-	@Override
-	public void render(RenderRequest request, RenderResponse response)
+    @Override
+    public void render(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+        // получаем страницу которую сейчас показываем
+        String jspPage = ParamUtil.getString(request, "jspPage");
+
+        if (Validator.isNull(jspPage) || "/view.jsp".equals(jspPage)) {
+            renderList(request, response);
+        } else if ("/view-pet.jsp".equals(jspPage)) {
+            renderViewPet(request, response);
+        }
+
+        super.render(request, response);
+    }
+    
+	private void renderList(RenderRequest request, RenderResponse response)
 			throws IOException, PortletException {
 		ThemeDisplay themeDisplay = getThemeDisplay(request);
 
@@ -73,9 +89,21 @@ public class PetCatalogPortlet extends MVCPortlet {
         } catch (Exception ex) {
             log.error("Cannot get pets", ex);
         }
-    		
-		super.render(request, response);
 	}
+	
+	private void renderViewPet(RenderRequest request, RenderResponse response) throws PortletException, IOException {
+        // try to get pet by pet id
+        Pet pet = null;
+        long petId = ParamUtil.getLong(request, "petId");
+        if (petId > 0) {
+            try {
+                pet = petLocalService.getPet(petId);
+                request.setAttribute("pet", pet);
+            } catch (Exception ex) {
+                log.error("Cannot get pet", ex);
+            }
+        }
+    }
 	
 	public void addPet(ActionRequest request, ActionResponse response) {
         ThemeDisplay themeDisplay = getThemeDisplay(request);

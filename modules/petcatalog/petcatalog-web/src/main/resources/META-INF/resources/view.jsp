@@ -20,10 +20,17 @@ int delta = 10;
 		<liferay-ui:search-container-row className="ru.emdev.samples.petcatalog.model.Pet"
 										modelVar="pet"
 										escapedModel="true">
-			<liferay-ui:search-container-column-text name="#"
+			<portlet:renderURL var="petURL">
+				<portlet:param name="jspPage" value="/view-pet.jsp"/>
+				<portlet:param name="petId" value="<%= String.valueOf(pet.getPetId()) %>" />
+			</portlet:renderURL>
+			
+			<liferay-ui:search-container-column-text href="<%= petURL %>"
+													 name="#"
 													 property="petId"/>
 			
-			<liferay-ui:search-container-column-text name="name"
+			<liferay-ui:search-container-column-text href="<%= petURL %>"
+													 name="name"
 													 property="name"/>
 			
 			<liferay-ui:search-container-column-text name="description"
