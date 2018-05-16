@@ -8,7 +8,7 @@ create table PetsCatalog_Pet (
 	createDate DATE null,
 	modifiedDate DATE null,
 	name VARCHAR(75) null,
-	description VARCHAR(75) null,
+	description STRING null,
 	price DOUBLE,
 	birthday DATE null
 );
