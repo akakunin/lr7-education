@@ -18,7 +18,7 @@
 		"rxjs": "5.4.1",
 		"zone.js": "0.8.17"
 	},
-	"description": "Angular Portlet",
+	"description": "UserList Portlet",
 	"devDependencies": {
 		"@types/angular": "1.6.32",
 		"@types/angular-animate": "1.5.8",
@@ -53,7 +53,7 @@
 		"typescript": "2.5.2"
 	},
 	"main": "lib/angular-loader.js",
-	"name": "angular-npm-portlet",
+	"name": "userlist-npm-portlet",
 	"private": true,
 	"scripts": {
 		"build": "tsc && babel --source-maps -d build/resources/main/META-INF/resources src/main/resources/META-INF/resources && liferay-npm-bundler"
