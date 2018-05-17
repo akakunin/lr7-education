@@ -43,21 +43,54 @@ export class LiferayUser {
 @Component({
 	template: `
 	<div>
-        <button (click)="getLiferayCompanyUsers()">
-            Click to load users...
-        </button>
+        <a class="btn btn-action btn-primary" (click)="getLiferayCompanyUsers()" data-placement="left" data-qa-id="addButton" data-toggle="tooltip" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_menuItem" title="" data-original-title="User">
+<span id="jbfs__null__null">
+    <svg class="lexicon-icon lexicon-icon-search" focusable="false" role="img" title="" viewBox="0 0 512 512">
+        <title>search</title>
+        <path class="lexicon-icon-outline" d="M503.254 467.861l-133.645-133.645c27.671-35.13 44.344-79.327 44.344-127.415 0-113.784-92.578-206.362-206.362-206.362s-206.362 92.578-206.362 206.362 92.578 206.362 206.362 206.362c47.268 0 90.735-16.146 125.572-42.969l133.851 133.851c5.002 5.002 11.554 7.488 18.106 7.488s13.104-2.486 18.106-7.488c10.004-10.003 10.004-26.209 0.029-36.183zM52.446 206.801c0-85.558 69.616-155.173 155.173-155.173s155.174 69.616 155.174 155.173-69.616 155.173-155.173 155.173-155.173-69.616-155.173-155.173z"></path>
+    </svg>
+</span>
+        </a>
     </div>
     
     <div *ngIf="userList && userList.length > 0">
         <div *ngIf="!selectedUser">
             <h1>Liferay Heroes</h1>
-            <div>
-                <ul>
-                    <li *ngFor="let user of userList" (click)="selectUser(user)">
-                    {{user.lastName}} {{user.middleName}} {{user.firstName}} 
-                    </li>
-                </ul>
+<div class=" users-search-container lfr-search-container-wrapper ">
+    <div id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_users" class="yui3-widget component searchcontainer">
+        <div id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_usersSearchContainer" class="searchcontainer-content">
+            <div class="table-responsive">
+                <table class="table table-autofit table-heading-nowrap table-list" data-searchcontainerid="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_users">
+                    <thead>
+                        <tr>
+                            <th class="lfr-name-column table-cell-content" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_users_col-name"> Full Name </th>
+                            <th class="lfr-screen-name-column table-cell-content" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_users_col-screen-name"> Screen Name </th>
+                            <th class="lfr-email-address-column table-cell-content" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_users_col-email-address"> Email Address </th>
+                            <th class="lfr-job-title-column table-cell-content" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_users_col-job-title"> Job Title </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="" data-qa-id="row" data-selectable="true" *ngFor="let user of userList" (click)="selectUser(user)">
+                            <td class="table-cell-content lfr-name-column" colspan="1">
+                                <a><strong>{{user.lastName}} {{user.middleName}} {{user.firstName}}</strong></a>
+                            </td>
+                            <td class="table-cell-content lfr-screen-name-column" colspan="1">
+                                <a>{{user.screenName}}</a>
+                            </td>
+                            <td class="table-cell-content lfr-email-address-column" colspan="1">
+                                <a>{{user.emailAddress}}</a>
+                            </td>
+                            <td class="table-cell-content lfr-job-title-column" colspan="1">
+                                <a>{{user.jobTitle}}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
+    </div>
+</div>
+
         </div>
         <div *ngIf="selectedUser">
             <h1>User details</h1>
