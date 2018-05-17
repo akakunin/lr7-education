@@ -42,7 +42,7 @@ export class LiferayUser {
 
 @Component({
 	template: `
-	<div>
+	<div *ngIf="!selectedUser">
         <a class="btn btn-action btn-primary" (click)="getLiferayCompanyUsers()" data-placement="left" data-qa-id="addButton" data-toggle="tooltip" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_menuItem" title="" data-original-title="User">
 <span id="jbfs__null__null">
     <svg class="lexicon-icon lexicon-icon-search" focusable="false" role="img" title="" viewBox="0 0 512 512">
@@ -93,45 +93,102 @@ export class LiferayUser {
 
         </div>
         <div *ngIf="selectedUser">
-            <h1>User details</h1>
-            <button (click)="selectedUser = null">Back to list</button>
-            <div><label>agreedToTermsOfUse: </label>{{selectedUser.agreedToTermsOfUse}}</div>
-            <div><label>comments: </label>{{selectedUser.comments}}</div>
-            <div><label>companyId: </label>{{selectedUser.companyId}}</div>
-            <div><label>contactId: </label>{{selectedUser.contactId}}</div>
-            <div><label>createDate: </label>{{selectedUser.createDate}}</div>
-            <div><label>defaultUser: </label>{{selectedUser.defaultUser}}</div>
-            <div><label>emailAddress: </label>{{selectedUser.emailAddress}}</div>
-            <div><label>emailAddressVerified: </label>{{selectedUser.emailAddressVerified}}</div>
-            <div><label>facebookId: </label>{{selectedUser.facebookId}}</div>
-            <div><label>failedLoginAttempts: </label>{{selectedUser.failedLoginAttempts}}</div>
-            <div><label>firstName: </label>{{selectedUser.firstName}}</div>
-            <div><label>googleUserId: </label>{{selectedUser.googleUserId}}</div>
-            <div><label>graceLoginCount: </label>{{selectedUser.graceLoginCount}}</div>
-            <div><label>greeting: </label>{{selectedUser.greeting}}</div>
-            <div><label>jobTitle: </label>{{selectedUser.jobTitle}}</div>
-            <div><label>languageId: </label>{{selectedUser.languageId}}</div>
-            <div><label>lastFailedLoginDate: </label>{{selectedUser.lastFailedLoginDate}}</div>
-            <div><label>lastLoginDate: </label>{{selectedUser.lastLoginDate}}</div>
-            <div><label>lastLoginIP: </label>{{selectedUser.lastLoginIP}}</div>
-            <div><label>lastName: </label>{{selectedUser.lastName}}</div>
-            <div><label>ldapServerId: </label>{{selectedUser.ldapServerId}}</div>
-            <div><label>lockout: </label>{{selectedUser.lockout}}</div>
-            <div><label>lockoutDate: </label>{{selectedUser.lockoutDate}}</div>
-            <div><label>loginDate: </label>{{selectedUser.loginDate}}</div>
-            <div><label>loginIP: </label>{{selectedUser.loginIP}}</div>
-            <div><label>middleName: </label>{{selectedUser.middleName}}</div>
-            <div><label>modifiedDate: </label>{{selectedUser.modifiedDate}}</div>
-            <div><label>mvccVersion: </label>{{selectedUser.mvccVersion}}</div>
-            <div><label>openId: </label>{{selectedUser.openId}}</div>
-            <div><label>portraitId: </label>{{selectedUser.portraitId}}</div>
-            <div><label>reminderQueryAnswer: </label>{{selectedUser.reminderQueryAnswer}}</div>
-            <div><label>reminderQueryQuestion: </label>{{selectedUser.reminderQueryQuestion}}</div>
-            <div><label>screenName: </label>{{selectedUser.screenName}}</div>
-            <div><label>status: </label>{{selectedUser.status}}</div>
-            <div><label>timeZoneId: </label>{{selectedUser.timeZoneId}}</div>
-            <div><label>userId: </label>{{selectedUser.userId}}</div>
-            <div><label>uuid: </label>{{selectedUser.uuid}}</div>
+            <h1> 
+                <a class="control-menu-icon" (click)="selectedUser = null">
+                    <span class="icon-monospaced" id="oxcj__null__null">
+                        <svg class="lexicon-icon lexicon-icon-angle-left" focusable="false" role="img" title="" viewBox="0 0 512 512">
+                            <title>angle-left</title>
+                            <path class="lexicon-icon-outline" d="M114.106 254.607c0.22 6.936 2.972 13.811 8.272 19.11l227.222 227.221c11.026 11.058 28.94 11.058 39.999 0 11.058-11.026 11.058-28.94 0-39.999l-206.333-206.333c0 0 206.333-206.333 206.333-206.333 11.058-11.059 11.058-28.973 0-39.999-11.058-11.059-28.973-11.059-39.999 0l-227.221 227.221c-5.3 5.3-8.052 12.174-8.273 19.111z"></path>
+                        </svg>
+                    </span>
+                </a> 
+                {{selectedUser.lastName}} {{selectedUser.middleName}} {{selectedUser.firstName}}
+            </h1>
+<fieldset aria-labelledby="detailsTitle" class=" " id="details" role="group">
+    <div aria-labelledby="detailsHeader" class="in " id="detailsContent" role="presentation">
+        <div class="panel-body">
+            <div class="row">
+                <fieldset class="fieldset col-md-6">
+                    <div class="">
+                        <div class="form-group input-String-wrapper">
+                            <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_screenName">
+                                Screen Name 
+                                <span class="text-warning" id="qfkd__null__null">
+                                    <svg class="lexicon-icon lexicon-icon-asterisk" focusable="false" role="img" title="" viewBox="0 0 512 512">
+                                        <title>asterisk</title>
+                                        <path class="lexicon-icon-outline" d="M323.6,190l146.7-48.8L512,263.9l-149.2,47.6l93.6,125.2l-104.9,76.3l-96.1-126.4l-93.6,126.4L56.9,435.3l92.3-123.9
+                                            L0,263.8l40.4-122.6L188.4,190v-159h135.3L323.6,190L323.6,190z"></path>
+                                    </svg>
+                                </span>
+                                <span class="hide-accessible">Required</span> 
+                            </label>
+                            <input class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_screenName" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_screenName" style="" type="text" value="{{selectedUser.screenName}}" maxlength="75" aria-describedby="" aria-required="true" disabled> 
+                        </div>
+                        <div class="form-group input-String-wrapper">
+                            <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_emailAddress">
+                                Email Address 
+                                <span class="text-warning" id="jbfs__null__null">
+                                    <svg class="lexicon-icon lexicon-icon-asterisk" focusable="false" role="img" title="" viewBox="0 0 512 512">
+                                        <title>asterisk</title>
+                                        <path class="lexicon-icon-outline" d="M323.6,190l146.7-48.8L512,263.9l-149.2,47.6l93.6,125.2l-104.9,76.3l-96.1-126.4l-93.6,126.4L56.9,435.3l92.3-123.9
+                                            L0,263.8l40.4-122.6L188.4,190v-159h135.3L323.6,190L323.6,190z"></path>
+                                    </svg>
+                                </span>
+                                <span class="hide-accessible">Required</span> 
+                            </label>
+                            <input class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_emailAddress" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_emailAddress" style="" type="text" value="{{selectedUser.emailAddress}}" maxlength="254" aria-describedby="" aria-required="true" disabled> 
+                        </div>
+                        <div class="form-group input-select-wrapper">
+                            <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_languageId"> Language </label> 
+                            <input class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_languageId" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_languageId" type="text" value="{{selectedUser.languageId}}" maxlength="254" aria-describedby="" aria-required="true" disabled>
+                        </div>
+                        <div id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_userNameFields">
+                            <div class="form-group input-select-wrapper">
+                                <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_prefixValue"> Prefix </label> 
+                                <select class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_prefixValue" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_prefixValue" type="text" value="" maxlength="254" aria-describedby="" aria-required="true">
+                                    <option class="" value=""> </option>
+                                    <option class="" value="Dr"> Dr </option>
+                                    <option class="" value="Mr"> Mr </option>
+                                    <option class="" value="Ms"> Ms </option>
+                                    <option class="" value="Mrs"> Mrs </option>
+                                </select>
+                            </div>
+                            <div class="form-group input-String-wrapper">
+                                <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_firstName">
+                                    First Name 
+                                    <span class="text-warning" id="uvlz__null__null">
+                                        <svg class="lexicon-icon lexicon-icon-asterisk" focusable="false" role="img" title="" viewBox="0 0 512 512">
+                                            <title>asterisk</title>
+                                            <path class="lexicon-icon-outline" d="M323.6,190l146.7-48.8L512,263.9l-149.2,47.6l93.6,125.2l-104.9,76.3l-96.1-126.4l-93.6,126.4L56.9,435.3l92.3-123.9
+                                                L0,263.8l40.4-122.6L188.4,190v-159h135.3L323.6,190L323.6,190z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="hide-accessible">Required</span> 
+                                </label>
+                                <input class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_firstName" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_firstName" style="" type="text" value="{{selectedUser.firstName}}" maxlength="75" aria-describedby="" aria-required="true" disabled> 
+                            </div>
+                            <div class="form-group input-String-wrapper"> <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_middleName"> Middle Name </label> <input class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_middleName" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_middleName" style="" type="text" value="{{selectedUser.middleName}}" maxlength="75" aria-describedby="" disabled> </div>
+                            <div class="form-group input-String-wrapper">
+                                <label class="control-label" for="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_lastName">
+                                    Last Name 
+                                    <span class="text-warning" id="ored__null__null">
+                                        <svg class="lexicon-icon lexicon-icon-asterisk" focusable="false" role="img" title="" viewBox="0 0 512 512">
+                                            <title>asterisk</title>
+                                            <path class="lexicon-icon-outline" d="M323.6,190l146.7-48.8L512,263.9l-149.2,47.6l93.6,125.2l-104.9,76.3l-96.1-126.4l-93.6,126.4L56.9,435.3l92.3-123.9
+                                                L0,263.8l40.4-122.6L188.4,190v-159h135.3L323.6,190L323.6,190z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="hide-accessible">Required</span> 
+                                </label>
+                                <input class="field form-control lfr-input-text" id="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_lastName" name="_com_liferay_users_admin_web_portlet_UsersAdminPortlet_lastName" style="" type="text" value="{{selectedUser.lastName}}" maxlength="75" aria-describedby="" aria-required="true" disabled> 
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</fieldset>
         </div>  
     </div>
     `,
