@@ -150,7 +150,7 @@ export class AppComponent {
     };
 	serviceResponseHandler = (response: any) => {
 	   console.log(response);
-	   this.userList = response;
+	   this.userList = response.filter((user:LiferayUser) => !user.defaultUser);
 	};
 	
     getLiferayCompanyUsers = () => 
